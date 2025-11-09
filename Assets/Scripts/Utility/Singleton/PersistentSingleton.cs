@@ -31,7 +31,7 @@ namespace GimGim.Singleton {
         /// <summary>
         /// Make sure to call base.Awake() in override if you need awake.
         /// </summary>
-        protected void Awake() {
+        protected virtual void Awake() {
             InitializeSingleton();
         }
         
