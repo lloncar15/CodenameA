@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 using GimGim.Singleton;
 
 namespace GimGim.Input {
-    public class InputController : PersistentSingleton<InputController> {
+    public class InputController : Singleton<InputController> {
         private PlayerInputActions _inputActions;
 
         public event Action<Vector2> OnMove;
