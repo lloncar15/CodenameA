@@ -1,0 +1,75 @@
+{
+  "id": "test_conversation",
+  "name": "Test Conversation",
+  "description": "A simple test conversation",
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "type": "text",
+      "id": "start",
+      "speakerId": "npc",
+      "text": "Hello! [pause:0.5]Welcome to the conversation system test.",
+      "nextNodeId": "choice_node"
+    },
+    "choice_node": {
+      "type": "choice",
+      "id": "choice_node",
+      "promptText": "What would you like to test?",
+      "speakerId": "npc",
+      "choices": [
+        {
+          "id": "test_text",
+          "text": "Test more dialogue",
+          "nextNodeId": "more_text"
+        },
+        {
+          "id": "test_branch",
+          "text": "Test branching",
+          "nextNodeId": "branch_node"
+        },
+        {
+          "id": "exit",
+          "text": "Exit conversation",
+          "nextNodeId": "goodbye"
+        }
+      ]
+    },
+    "more_text": {
+      "type": "text",
+      "id": "more_text",
+      "speakerId": "npc",
+      "text": "This is additional dialogue with [speed:0.5]slower text[speed:1] and normal text.",
+      "nextNodeId": "choice_node"
+    },
+    "branch_node": {
+      "type": "event",
+      "id": "branch_node",
+      "commands": [
+        {
+          "commandType": "setVariable",
+          "parameters": {
+            "name": "visited_branch",
+            "type": "bool",
+            "value": "true"
+          }
+        }
+      ],
+      "nextNodeId": "branch_response"
+    },
+    "branch_response": {
+      "type": "text",
+      "id": "branch_response",
+      "speakerId": "npc",
+      "text": "You chose the branch path! A variable has been set.",
+      "nextNodeId": "choice_node"
+    },
+    "goodbye": {
+      "type": "text",
+      "id": "goodbye",
+      "speakerId": "npc",
+      "text": "Goodbye! Thanks for testing.",
+      "nextNodeId": null
+    }
+  },
+  "participantIds": ["npc"]
+}

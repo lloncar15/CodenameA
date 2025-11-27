@@ -43,7 +43,7 @@ namespace GimGim.ConversationSystem {
         /// <param name="textAsset">The TextAsset containing JSON.</param>
         /// <returns>The loaded conversation, or null if loading fails.</returns>
         public ConversationData LoadFromTextAsset(TextAsset textAsset) {
-            if (textAsset == null) {
+            if (!textAsset) {
                 Debug.LogError("ConversationLoader: TextAsset is null.");
                 return null;
             }

@@ -583,10 +583,10 @@ namespace GimGim.ConversationSystem.Editor {
             int errors = 0;
             int warnings = 0;
 
-            foreach (var conversation in _loadedConversations) {
+            foreach (ConversationData conversation in _loadedConversations) {
                 _validator.Validate(conversation);
                 
-                foreach (var result in _validator.Results) {
+                foreach (ValidationResult result in _validator.Results) {
                     if (result.Severity == ValidationSeverity.Error) {
                         errors++;
                     }
