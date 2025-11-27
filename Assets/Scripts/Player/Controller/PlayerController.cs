@@ -1,8 +1,7 @@
-using System;
 using GimGim.Input;
 using UnityEngine;
 
-namespace GimGim.Player.Controller {
+namespace GimGim.PlayerController {
     [RequireComponent(typeof(PlayerMovement))]
     [RequireComponent(typeof(PlayerJump))]
     [RequireComponent(typeof(PlayerDash))]
@@ -90,6 +89,10 @@ namespace GimGim.Player.Controller {
 
         private void HandleInteract() {
             Debug.Log("Interact pressed");
+        }
+
+        public void DisableMovement() {
+            
         }
     }
 }

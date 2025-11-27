@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace GimGim.Player.Controller {
+namespace GimGim.PlayerController {
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(BoxCollider2D))]
     public class PlayerMovement : MonoBehaviour {

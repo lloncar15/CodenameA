@@ -61,7 +61,7 @@ namespace GimGim.ConversationSystem {
         /// <summary>
         /// Event raised when an event is triggered from dialogue.
         /// </summary>
-        public event Action<string, SerializableDictionary<string, string>> OnDialogueEvent;
+        public event Action<string, SerializableDictionary<string, string>> OnConversationEvent;
 
         private void Awake() {
             if (autoInitialize) {
@@ -111,13 +111,13 @@ namespace GimGim.ConversationSystem {
             CommandContext commandContext = new(_stateManager);
             commandContext.OnEventTriggered += (eventName, parameters) => {
                 _context.RaiseEventTriggered(eventName, parameters);
-                OnDialogueEvent?.Invoke(eventName, parameters);
+                OnConversationEvent?.Invoke(eventName, parameters);
             };
             _context.CommandContext = commandContext;
 
             // Hook up context events
             _context.OnEventTriggered += (eventName, parameters) => {
-                OnDialogueEvent?.Invoke(eventName, parameters);
+                OnConversationEvent?.Invoke(eventName, parameters);
             };
 
             // Create runner with conversation loader
