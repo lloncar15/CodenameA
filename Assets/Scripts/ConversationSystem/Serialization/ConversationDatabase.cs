@@ -37,8 +37,6 @@ namespace GimGim.ConversationSystem {
                     _loadedConversations[conversation.Id] = conversation;
                 }
             }
-
-            Debug.Log($"ConversationDatabase: Loaded {_loadedConversations.Count} conversations.");
         }
 
         /// <summary>
