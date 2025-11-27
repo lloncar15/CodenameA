@@ -28,6 +28,11 @@ namespace GimGim.ConversationSystem {
         /// If null, choice is always visible.
         /// </summary>
         public ConditionData VisibilityCondition { get; set; }
+        
+        /// <summary>
+        /// How to handle visibility when condition fails.
+        /// </summary>
+        public ChoiceVisibility Visibility = ChoiceVisibility.Visible;
 
         /// <summary>
         /// Condition that must be met for this choice to be selectable.

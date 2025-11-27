@@ -231,22 +231,22 @@ namespace GimGim.ConversationSystem {
         #region IConversationVariableProvider Implementation
 
         /// <inheritdoc />
-        bool IConversationVariableProvider.TryGetBool(string variableName, out bool value) {
+        public bool TryGetBool(string variableName, out bool value) {
             return _data.BoolVariables.TryGetValue(variableName, out value);
         }
 
         /// <inheritdoc />
-        bool IConversationVariableProvider.TryGetInt(string variableName, out int value) {
+        public bool TryGetInt(string variableName, out int value) {
             return _data.IntVariables.TryGetValue(variableName, out value);
         }
 
         /// <inheritdoc />
-        bool IConversationVariableProvider.TryGetFloat(string variableName, out float value) {
+        public bool TryGetFloat(string variableName, out float value) {
             return _data.FloatVariables.TryGetValue(variableName, out value);
         }
 
         /// <inheritdoc />
-        bool IConversationVariableProvider.TryGetString(string variableName, out string value) {
+        public bool TryGetString(string variableName, out string value) {
             return _data.StringVariables.TryGetValue(variableName, out value);
         }
 
