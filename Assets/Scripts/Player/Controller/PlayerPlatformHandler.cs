@@ -1,7 +1,6 @@
-using System;
 using UnityEngine;
 
-namespace GimGim.Player.Controller {
+namespace GimGim.PlayerController {
     [RequireComponent(typeof(BoxCollider2D))]
     public class PlayerPlatformHandler : MonoBehaviour {
         private Transform _currentPlatform;
