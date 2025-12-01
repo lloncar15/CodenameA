@@ -1,25 +1,9 @@
-using System;
 using UnityEngine;
 
 namespace GimGim.Player.Controller {
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(BoxCollider2D))]
     public class PlayerMovement : MonoBehaviour {
-        [Serializable]
-        public class MovementSettings {
-            [Header("Movement")] 
-            public float moveSpeed = 7f;
-            public float acceleration = 50f;
-            public float deceleration = 50f;
-            public float airAcceleration = 30f;
-            public float airDeceleration = 30f;
-        
-            [Header("Ground Detection")]
-            public LayerMask groundLayer;
-            public Vector2 groundCheckSize = new Vector2(0.9f, 0.1f);
-            public float groundCheckDistance = 0.05f;
-        }
-
         [Header("Movement Settings")] 
         public MovementSettings settings;
 

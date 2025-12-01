@@ -4,17 +4,6 @@ using UnityEngine;
 namespace GimGim.Player.Controller {
     [RequireComponent(typeof(Rigidbody2D))]
     public class PlayerDash : MonoBehaviour {
-        [Serializable]
-        public class DashSettings {
-            [Header("Dash")] public float dashSpeed = 20f;
-            public float dashDuration = 0.15f;
-            public float dashCooldown = 1f;
-
-            [Header("Dash Physics")] 
-            public bool disableGravityDuringDash = true;
-            public float onDashEndedVelocityFactor = 0.5f;
-        }
-        
         [Header("Dash Settings")]
         public DashSettings settings;
 

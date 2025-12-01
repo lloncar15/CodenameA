@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cccd590ec6f43f6bc041b10d1268237, type: 3}
+  m_Name: Movement Settings
+  m_EditorClassIdentifier: 
+  moveSpeed: 7
+  acceleration: 50
+  deceleration: 50
+  airAcceleration: 30
+  airDeceleration: 30
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  groundCheckSize: {x: 0.9, y: 0.05}
+  groundCheckDistance: 0.8
+  preventWallStick: 1
+  wallCheckDistance: 0.1
+  enableCornerCorrection: 1
+  cornerCorrectionDistance: 0.15
+  cornerCorrectionHeight: 0.3
+  cornerCorrectionSpeed: 3
+  headLevelFactor: 0.3
+  movementXThreshold: 0.1
+  boxColliderSizeFactor: 0.9

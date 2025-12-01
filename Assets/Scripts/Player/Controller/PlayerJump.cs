@@ -4,23 +4,6 @@ using UnityEngine;
 namespace GimGim.Player.Controller {
     [RequireComponent(typeof(Rigidbody2D))]
     public class PlayerJump : MonoBehaviour {
-        [Serializable]
-        public class JumpSettings {
-            [Header("Jump")]
-            public float jumpForce = 14f;
-            public float minJumpForce = 7f;
-            public float gravityScale = 3f;
-            public float fallGravityMultiplier = 1.5f;
-            public float lowJumpGravityMultiplier = 2f;
-
-            [Header("Jump Buffering")]
-            public float coyoteTime = 0.15f;
-            public float jumpBufferTime = 0.1f;
-
-            [Header("Air Control")] 
-            public int maxAirJumps;
-        }
-        
         [Header("Jump Settings")]
         public JumpSettings settings;
 
