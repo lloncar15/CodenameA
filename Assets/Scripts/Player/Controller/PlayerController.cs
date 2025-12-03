@@ -1,5 +1,7 @@
 using System;
 using GimGim.Input;
+using GimGim.Utility;
+using GimGim.Utility.Logger;
 using UnityEngine;
 
 namespace GimGim.Player.Controller {
@@ -59,6 +61,8 @@ namespace GimGim.Player.Controller {
             }
             else {
                 _movement.ApplyMovement();
+                
+                _movement.ApplyCornerAssist();
 
                 _jump.TryJump(_movement.IsGrounded, _platformHandler.DetachFromPlatform);
                 _jump.ApplyVariableJumpHeight();

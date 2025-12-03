@@ -60,7 +60,8 @@ namespace GimGim.Player.Controller {
                 _coyoteTimeCounter = 0;
                 return true;
             }
-            else if (!isGrounded && _airJumpsRemaining > 0) {
+            
+            if (!isGrounded && _airJumpsRemaining > 0) {
                 PerformJump(settings.jumpForce, onPlatformDetach);
                 _airJumpsRemaining--;
                 _jumpBufferCounter = 0;
@@ -86,6 +87,9 @@ namespace GimGim.Player.Controller {
             else if (_rb.linearVelocityY > 0 && !_isJumpHeld) {
                 _rb.gravityScale = _originalGravityScale * settings.lowJumpGravityMultiplier;
             }
+            else if (settings.enableHangTime && IsNearApex()) {
+                _rb.gravityScale = _originalGravityScale * settings.hangTimeGravityMultiplier;
+            }
             else {
                 _rb.gravityScale = _originalGravityScale;
             }
@@ -97,8 +101,19 @@ namespace GimGim.Player.Controller {
             }
         }
         
+        /// <summary>
+        /// Resets the gravity scale to the original scale
+        /// </summary>
         public void ResetGravity() {
             _rb.gravityScale = _originalGravityScale;
+        }
+
+        /// <summary>
+        /// Checks if the player is near the apex (peak) of the jump
+        /// </summary>
+        /// <returns>True if vertical velocity is within hang time threshold</returns>
+        private bool IsNearApex() {
+            return Mathf.Abs(_rb.linearVelocityY) < settings.hangTimeThreshold;
         }
     }
 }

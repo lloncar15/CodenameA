@@ -5,10 +5,12 @@ namespace GimGim.Player.Controller {
     [RequireComponent(typeof(BoxCollider2D))]
     public class PlayerPlatformHandler : MonoBehaviour {
         private Transform _currentPlatform;
+        private Transform _originalParent;
         private BoxCollider2D _collider;
 
         private void Awake() {
             _collider = GetComponent<BoxCollider2D>();
+            _originalParent = transform.parent;
         }
 
         public void HandlePlatform(bool isGrounded, LayerMask groundLayer, 
@@ -45,7 +47,7 @@ namespace GimGim.Player.Controller {
             if (!_currentPlatform)
                 return;
             
-            transform.SetParent(null);
+            transform.SetParent(_originalParent);
             _currentPlatform = null;
         }
     }
