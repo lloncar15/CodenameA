@@ -16,9 +16,8 @@ namespace GimGim.AudioManagement {
                 return;
             
             if (Application.isPlaying) {
-                if (visualizerView.audioClip) {
-                    visualizerView.SetAudioClip(visualizerView.audioClip);
-                    visualizerView.RefreshVisualization();
+                if (visualizerView.clipVisual.clip) {
+                    visualizerView.RefreshVisualization(visualizerView.clipVisual);
                 }
             }
             else {

@@ -1,8 +1,10 @@
 using UnityEngine;
 
 namespace GimGim.AudioManagement {
+    /// <summary>
+    /// Class which creates visualizations for given AudioClips.
+    /// </summary>
     public class AudioClipVisualizer {
-        private AudioClip _currentClip;
         private StereoMode _stereoMode;
         private int _textureWidth;
         private int _textureHeight;
@@ -11,10 +13,6 @@ namespace GimGim.AudioManagement {
             _textureWidth  = width;
             _textureHeight = height;
             _stereoMode = mode;
-        }
-        
-        public void SetAudioClip(AudioClip clip) {
-            _currentClip = clip;
         }
         
         public void SetStereoMode(StereoMode mode) {
@@ -27,14 +25,14 @@ namespace GimGim.AudioManagement {
         }
 
         /// <summary>
-        /// Depending on the StereoMode, creates a Texture2D showing the waveform of the current audio clip.
+        /// Depending on the StereoMode, creates a Texture2D for an AudioClipVisual.
         /// </summary>
+        /// <param name="clipVisual">The AudioClipVisual to create the visual for.</param>
         /// <param name="waveformColor">The color of the waveform.</param>
         /// <param name="backgroundColor">The color of the background.</param>
-        /// <returns>A Texture2D showing the waveform of the current audio clip.</returns>
-        public Texture2D GenerateWaveformTexture(Color waveformColor, Color backgroundColor) {
-            if (!_currentClip)
-                return CreateEmptyTexture(backgroundColor);
+        public void GenerateWaveformTextureForClipVisual(AudioClipVisual clipVisual, Color waveformColor, Color backgroundColor) {
+            if (!clipVisual.clip)
+                return;
             
             Texture2D texture = new Texture2D(_textureWidth, _textureHeight, TextureFormat.RGBA32, false);
             Color[] pixels = new Color[_textureWidth * _textureHeight];
@@ -43,20 +41,21 @@ namespace GimGim.AudioManagement {
                 pixels[i] = backgroundColor;
             }
             
-            float[] samples = new float[_currentClip.samples * _currentClip.channels];
-            _currentClip.GetData(samples, 0);
+            AudioClip clip  = clipVisual.clip;
+            float[] samples = new float[clip.samples * clip.channels];
+            clip.GetData(samples, 0);
 
-            if (_currentClip.channels == 2 && _stereoMode == StereoMode.Stereo) {
+            if (clip.channels == 2 && _stereoMode == StereoMode.Stereo) {
                 DrawStereoWaveform(pixels, samples, waveformColor);
             }
             else {
-                DrawMonoWaveform(pixels, samples, _currentClip.channels, waveformColor);
+                DrawMonoWaveform(pixels, samples, clip.channels, waveformColor);
             }
             
             texture.SetPixels(pixels);
             texture.Apply();
-            
-            return texture;
+
+            clipVisual.texture = texture;
         } 
         
         /// <summary>

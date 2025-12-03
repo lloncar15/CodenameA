@@ -10,7 +10,8 @@ namespace GimGim.AudioManagement {
         [SerializeField] private Color waveformColor = new Color(0.3f, 0.5f, 1f, 1f);
         [SerializeField] private Color backgroundColor = new Color(0.15f, 0.15f, 0.15f, 1f);
         [SerializeField] private StereoMode stereoMode = StereoMode.Mono;
-        [SerializeField] public AudioClip audioClip;
+        //TODO: just for testing purposes, otherwise audio transform manager will provide the audio clip visual
+        [SerializeField] public AudioClipVisual clipVisual;
         
         private RawImage _rawImage;
         private AudioClipVisualizer _visualizer;
@@ -19,10 +20,6 @@ namespace GimGim.AudioManagement {
         private void Awake() {
             _rawImage = GetComponent<RawImage>();
             _visualizer = new AudioClipVisualizer(textureWidth, textureHeight);
-        }
-        
-        public void SetAudioClip(AudioClip clip) {
-            _visualizer.SetAudioClip(clip);
         }
 
         public void SetStereoMode(StereoMode mode) {
@@ -47,12 +44,16 @@ namespace GimGim.AudioManagement {
         /// <summary>
         /// Deletes the current texture if it exists and generates a texture from the audio clip in the visualizer.
         /// </summary>
-        public void RefreshVisualization() {
+        public void RefreshVisualization(AudioClipVisual clip) {
             if (_currentTexture) {
                 Destroy(_currentTexture);
             }
+            
+            if (!clip.texture) {
+                _visualizer.GenerateWaveformTextureForClipVisual(clip, waveformColor, backgroundColor);
+            }
 
-            _currentTexture = _visualizer.GenerateWaveformTexture(waveformColor, backgroundColor);
+            _currentTexture = clip.texture;
             _rawImage.texture = _currentTexture;
         }
 

@@ -75,6 +75,7 @@ namespace GimGim.Player.Controller {
         /// Checks at head and feet level, works only when rising
         /// </summary>
         public void ApplyCornerAssist() {
+            //TODO: needs a bit of debugging to make it work properly
             if (!settings.enableLedgeAssist)
                 return;
             
@@ -87,14 +88,12 @@ namespace GimGim.Player.Controller {
             {
                 float push = feetPushDistance * settings.ledgeAssistSpeed * Time.fixedDeltaTime;
                 _rb.linearVelocityX += push;
-                Debug.Log($"Pushed the player for {push}");
                 return;
             }
             
             if (DetectCornerAtHead(direction, out float headPushDistance)) {
                 float push = headPushDistance * settings.ceilingBumpSpeed * Time.fixedDeltaTime;
                 _rb.linearVelocityX += push;
-                Debug.Log($"Pushed the player for {push}");
             }
         }
 
