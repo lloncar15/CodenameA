@@ -1,10 +1,10 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using GimGim.Singleton;
+using GimGim.Utility;
 
 namespace GimGim.Input {
-    public class InputController : Singleton<InputController> {
+    public class InputController : PersistentSingleton<InputController> {
         private PlayerInputActions _inputActions;
 
         public event Action<Vector2> OnMove;
@@ -18,8 +18,8 @@ namespace GimGim.Input {
         public bool IsJumpHeld { get; private set; }
 
         protected override void Awake() {
-            base.Awake();
             _inputActions = new PlayerInputActions();
+            base.Awake();
         }
 
         private void OnEnable() {
@@ -31,8 +31,6 @@ namespace GimGim.Input {
         }
 
         public void EnableGameplayInput() {
-            DisableAllInput();
-        
             _inputActions.Gameplay.Enable();
         
             _inputActions.Gameplay.Move.performed += HandleMove;
@@ -46,6 +44,9 @@ namespace GimGim.Input {
         }
 
         public void DisableGameplayInput() {
+            if (_inputActions == null) 
+                return;
+            
             _inputActions.Gameplay.Move.performed -= HandleMove;
             _inputActions.Gameplay.Move.canceled -= HandleMove;
         

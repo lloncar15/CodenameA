@@ -1,7 +1,4 @@
-using System;
 using GimGim.Input;
-using GimGim.Utility;
-using GimGim.Utility.Logger;
 using UnityEngine;
 
 namespace GimGim.Player.Controller {
