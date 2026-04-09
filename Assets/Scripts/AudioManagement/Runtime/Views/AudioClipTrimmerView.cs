@@ -45,7 +45,7 @@ namespace GimGim.AudioManagement {
             if (normalizedX < clipData.trimStart || normalizedX > clipData.trimEnd)
                 return;
             
-            controller.PlayClip(clipData.trimStart, clipData.trimEnd);
+            controller.PlayClip(normalizedX, clipData.trimEnd);
         }
         
         /// <summary>
