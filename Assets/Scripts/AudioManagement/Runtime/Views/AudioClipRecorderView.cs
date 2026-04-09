@@ -1,26 +1,28 @@
-using System;
 using UnityEngine;
 
 namespace GimGim.AudioManagement {
     public class AudioClipRecorderView : MonoBehaviour {
-        [SerializeField] private AudioClipRecorder recorder;
-        [SerializeField] private int maxClipLength = 3;
+        [SerializeField] private AudioClipController controller;
 
-        private void OnEnable() {
-            recorder = new AudioClipRecorder(maxClipLength);
-            recorder.OnEnable();
-        }
+        private bool _wasRecording;
 
         private void Update() {
-            
+            bool isRecording = controller.Recorder.IsRecording();
+
+            if (_wasRecording && !isRecording) {
+                controller.Recorder.OnStoppedRecording();
+            }
+
+            _wasRecording = isRecording;
         }
 
         public void StartRecording() {
-            recorder.StartRecording();
+            controller.Recorder.StartRecording();
         }
 
         public void StopRecording() {
-            recorder.StopRecording();
+            _wasRecording = false;
+            controller.Recorder.StopRecording();
         }
     }
 }

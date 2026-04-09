@@ -2,16 +2,17 @@ using UnityEngine;
 
 namespace GimGim.AudioManagement {
     /// <summary>
-    /// Class which creates visualizations for given AudioClips.
+    /// Generates a waveform <see cref="Texture2D"/> for an <see cref="AudioClipData"/> instance.
+    /// The texture is written directly onto <see cref="AudioClipData.waveformTexture"/>.
     /// </summary>
     public class AudioClipVisualizer {
+        private int _width;
+        private int _height;
         private StereoMode _stereoMode;
-        private int _textureWidth;
-        private int _textureHeight;
 
         public AudioClipVisualizer(int width = 1024, int height = 256, StereoMode mode = StereoMode.Mono) {
-            _textureWidth  = width;
-            _textureHeight = height;
+            _width  = width;
+            _height = height;
             _stereoMode = mode;
         }
         
@@ -20,28 +21,31 @@ namespace GimGim.AudioManagement {
         }
 
         public void SetResolution(int width, int height) {
-            _textureWidth = width;
-            _textureHeight = height;
+            _width = width;
+            _height = height;
         }
 
         /// <summary>
         /// Depending on the StereoMode, creates a Texture2D for an AudioClipVisual.
         /// </summary>
-        /// <param name="clipVisual">The AudioClipVisual to create the visual for.</param>
+        /// <param name="clipData">The AudioClipVisual to create the visual for.</param>
         /// <param name="waveformColor">The color of the waveform.</param>
         /// <param name="backgroundColor">The color of the background.</param>
-        public void GenerateWaveformTextureForClipVisual(AudioClipVisual clipVisual, Color waveformColor, Color backgroundColor) {
-            if (!clipVisual.clip)
+        public void GenerateTexture(AudioClipData clipData, Color waveformColor, Color backgroundColor) {
+            if (!clipData.originalClip)
                 return;
             
-            Texture2D texture = new Texture2D(_textureWidth, _textureHeight, TextureFormat.RGBA32, false);
-            Color[] pixels = new Color[_textureWidth * _textureHeight];
+            if (clipData.waveformTexture)
+                Object.Destroy(clipData.waveformTexture);
+            
+            Texture2D texture = new(_width, _height, TextureFormat.RGBA32, false);
+            Color[] pixels = new Color[_width * _height];
 
             for (int i = 0; i < pixels.Length; i++) {
                 pixels[i] = backgroundColor;
             }
             
-            AudioClip clip  = clipVisual.clip;
+            AudioClip clip  = clipData.originalClip;
             float[] samples = new float[clip.samples * clip.channels];
             clip.GetData(samples, 0);
 
@@ -55,7 +59,7 @@ namespace GimGim.AudioManagement {
             texture.SetPixels(pixels);
             texture.Apply();
 
-            clipVisual.texture = texture;
+            clipData.waveformTexture = texture;
         } 
         
         /// <summary>
@@ -65,14 +69,14 @@ namespace GimGim.AudioManagement {
         /// <param name="samples">Samples from the audio clip.</param>
         /// <param name="waveformColor">The color to draw waveform pixels.</param>
         private void DrawStereoWaveform(Color[] pixels, float[] samples, Color waveformColor) {
-            int samplesPerPixel = samples.Length / (_textureWidth * 2);
+            int samplesPerPixel = samples.Length / (_width * 2);
             if (samplesPerPixel < 1) samplesPerPixel = 1;
             
-            int quarterHeight = _textureHeight / 4;
-            int leftChannelCenter = _textureHeight / 4;
-            int rightChannelCenter = 3 * _textureHeight / 4;
+            int quarterHeight = _height / 4;
+            int leftChannelCenter = _height / 4;
+            int rightChannelCenter = 3 * _height / 4;
             
-            for (int x = 0; x < _textureWidth; x++) {
+            for (int x = 0; x < _width; x++) {
                 int sampleIndex = x * samplesPerPixel * 2;
                 
                 if (sampleIndex >= samples.Length)
@@ -97,21 +101,21 @@ namespace GimGim.AudioManagement {
                 // Draw left channel
                 int leftYMin = leftChannelCenter + Mathf.RoundToInt(leftMin * quarterHeight);
                 int leftYMax = leftChannelCenter + Mathf.RoundToInt(leftMax * quarterHeight);
-                leftYMin = Mathf.Clamp(leftYMin, 0, _textureHeight / 2 - 1);
-                leftYMax = Mathf.Clamp(leftYMax, 0, _textureHeight / 2 - 1);
+                leftYMin = Mathf.Clamp(leftYMin, 0, _height / 2 - 1);
+                leftYMax = Mathf.Clamp(leftYMax, 0, _height / 2 - 1);
                 
                 for (int y = leftYMin; y <= leftYMax; y++) {
-                    pixels[y * _textureWidth + x] = waveformColor;
+                    pixels[y * _width + x] = waveformColor;
                 }
                 
                 // Draw right channel
                 int rightYMin = rightChannelCenter + Mathf.RoundToInt(rightMin * quarterHeight);
                 int rightYMax = rightChannelCenter + Mathf.RoundToInt(rightMax * quarterHeight);
-                rightYMin = Mathf.Clamp(rightYMin, _textureHeight / 2, _textureHeight - 1);
-                rightYMax = Mathf.Clamp(rightYMax, _textureHeight / 2, _textureHeight - 1);
+                rightYMin = Mathf.Clamp(rightYMin, _height / 2, _height - 1);
+                rightYMax = Mathf.Clamp(rightYMax, _height / 2, _height - 1);
                 
                 for (int y = rightYMin; y <= rightYMax; y++) {
-                    pixels[y * _textureWidth + x] = waveformColor;
+                    pixels[y * _width + x] = waveformColor;
                 }
             }
         }
@@ -124,13 +128,13 @@ namespace GimGim.AudioManagement {
         /// <param name="channels">Number of channels.</param>
         /// <param name="waveformColor">The color to draw waveform pixels.</param>
         private void DrawMonoWaveform(Color[] pixels, float[] samples, int channels, Color waveformColor) {
-            int samplesPerPixel = samples.Length / (_textureWidth * channels);
+            int samplesPerPixel = samples.Length / (_width * channels);
             if (samplesPerPixel < 1) samplesPerPixel = 1;
         
-            int centerY = _textureHeight / 2;
-            int halfHeight = _textureHeight / 2;
+            int centerY = _height / 2;
+            int halfHeight = _height / 2;
         
-            for (int x = 0; x < _textureWidth; x++) {
+            for (int x = 0; x < _width; x++) {
                 int sampleIndex = x * samplesPerPixel * channels;
             
                 if (sampleIndex >= samples.Length)
@@ -160,12 +164,12 @@ namespace GimGim.AudioManagement {
                 int yMin = centerY + Mathf.RoundToInt(min * halfHeight);
                 int yMax = centerY + Mathf.RoundToInt(max * halfHeight);
             
-                yMin = Mathf.Clamp(yMin, 0, _textureHeight - 1);
-                yMax = Mathf.Clamp(yMax, 0, _textureHeight - 1);
+                yMin = Mathf.Clamp(yMin, 0, _height - 1);
+                yMax = Mathf.Clamp(yMax, 0, _height - 1);
             
                 // Draw vertical line from min to max
                 for (int y = yMin; y <= yMax; y++) {
-                    pixels[y * _textureWidth + x] = waveformColor;
+                    pixels[y * _width + x] = waveformColor;
                 }
             }
         }
@@ -176,8 +180,8 @@ namespace GimGim.AudioManagement {
         /// <param name="backgroundColor">The color of the texture.</param>
         /// <returns>An empty texture colored with the set color.</returns>
         private Texture2D CreateEmptyTexture(Color backgroundColor) {
-            Texture2D texture = new Texture2D(_textureWidth, _textureHeight, TextureFormat.RGBA32, false);
-            Color[] pixels = new Color[_textureWidth * _textureHeight];
+            Texture2D texture = new Texture2D(_width, _height, TextureFormat.RGBA32, false);
+            Color[] pixels = new Color[_width * _height];
 
             for (int i = 0; i < pixels.Length; i++) {
                 pixels[i] = backgroundColor;

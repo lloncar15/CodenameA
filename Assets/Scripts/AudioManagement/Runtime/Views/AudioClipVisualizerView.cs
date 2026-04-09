@@ -2,64 +2,49 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace GimGim.AudioManagement {
-    [RequireComponent(typeof(RawImage))]
+    /// <summary>
+    /// Displays the waveform texture and renders a trim overlay via a second
+    /// stacked <see cref="RawImage"/>. Subscribes to <see cref="AudioClipController"/>
+    /// events to stay in sync.
+    /// Expects a child GameObject named "TrimOverlay" with a <see cref="RawImage"/>.
+    /// </summary>
     public class AudioClipVisualizerView : MonoBehaviour {
         [Header("Visualization Settings")]
-        [SerializeField] private int textureWidth = 1024;
-        [SerializeField] private int textureHeight = 256;
-        [SerializeField] private Color waveformColor = new Color(0.3f, 0.5f, 1f, 1f);
-        [SerializeField] private Color backgroundColor = new Color(0.15f, 0.15f, 0.15f, 1f);
-        [SerializeField] private StereoMode stereoMode = StereoMode.Mono;
-        //TODO: just for testing purposes, otherwise audio transform manager will provide the audio clip visual
-        [SerializeField] public AudioClipVisual clipVisual;
+        [SerializeField] private AudioClipController controller;
+        [SerializeField] private RawImage waveformImage;
         
-        private RawImage _rawImage;
-        private AudioClipVisualizer _visualizer;
-        private Texture2D _currentTexture;
+        private Texture2D _overlayTexture;
 
-        private void Awake() {
-            _rawImage = GetComponent<RawImage>();
-            _visualizer = new AudioClipVisualizer(textureWidth, textureHeight);
-        }
-
-        public void SetStereoMode(StereoMode mode) {
-            stereoMode = mode;
-            _visualizer.SetStereoMode(stereoMode);
+        private void OnEnable() {
+            controller.ClipDataChanged += OnClipDataChanged;
         }
         
-        public void SetWaveformColor(Color color) {
-            waveformColor = color;
+        private void OnDisable() {
+            controller.ClipDataChanged -= OnClipDataChanged;
         }
-    
-        public void SetBackgroundColor(Color color) {
-            backgroundColor = color;
+
+        private void OnDestroy() {
+            if (_overlayTexture)
+                Destroy(_overlayTexture);
         }
-    
-        public void SetResolution(int width, int height) {
-            textureWidth = width;
-            textureHeight = height;
-            _visualizer.SetResolution(width, height);
+
+        private void OnClipDataChanged(AudioClipData clipData) {
+            waveformImage.texture = clipData.waveformTexture;
+            RefreshVisualization(clipData);
         }
 
         /// <summary>
         /// Deletes the current texture if it exists and generates a texture from the audio clip in the visualizer.
         /// </summary>
-        public void RefreshVisualization(AudioClipVisual clip) {
-            if (_currentTexture) {
-                Destroy(_currentTexture);
-            }
+        public void RefreshVisualization(AudioClipData clip) {
+            if (!clip.waveformTexture)
+                return;
             
-            if (!clip.texture) {
-                _visualizer.GenerateWaveformTextureForClipVisual(clip, waveformColor, backgroundColor);
-            }
-
-            _currentTexture = clip.texture;
-            _rawImage.texture = _currentTexture;
-        }
-
-        private void OnDestroy() {
-            if (_currentTexture)
-                Destroy(_currentTexture);
+            if (_overlayTexture)
+                Destroy(_overlayTexture);
+            
+            _overlayTexture = clip.waveformTexture;
+            waveformImage.texture = _overlayTexture;
         }
     }
 }
